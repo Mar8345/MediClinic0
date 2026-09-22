@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ملف الطبيب | عيادة الشفاء الطبية</title>
+  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body data-page="doctor-profile">
+  <nav class="role-nav no-print" aria-label="تنقل ملف الطبيب">
+    <div class="container role-nav-inner">
+      <a href="../index.html" class="brand"><img src="../assets/logo.svg" alt="شعار العيادة" class="logo"><span>عيادة الشفاء<small>ملف الطبيب</small></span></a>
+      <a href="dashboard.html" class="nav-item">🩺 قائمة اليوم</a>
+      <a href="profile.html" class="nav-item is-active" aria-current="page">👤 ملفي</a>
+      <span class="nav-spacer"></span><span class="sec-user" id="doctorUserName"></span>
+      <button type="button" class="btn btn-outline btn-sm" id="doctorLogoutBtn">خروج</button>
+    </div>
+  </nav>
+  <main class="container role-content">
+    <section id="profileGate" class="login-card" hidden>
+      <h1>يلزم تسجيل الدخول</h1><p class="text-muted">سجّل دخولك للوصول إلى ملف الطبيب.</p>
+      <a class="btn btn-primary" href="dashboard.html">الذهاب لتسجيل الدخول</a>
+    </section>
+    <div id="profileContent" hidden>
+      <div class="app-toolbar"><div class="toolbar-row"><div><h1 class="page-title">👤 ملف الطبيب</h1><p class="muted" id="profileMeta"></p></div></div></div>
+      <section class="profile-card role-profile-card" id="profileCard"></section>
+      <section class="section-block">
+        <div class="section-head"><div><h2>تعديل ملفي</h2><p class="muted">يمكنك تعديل الهاتف والسيرة الذاتية وجدول العمل فقط.</p></div></div>
+        <form id="doctorProfileForm" class="form-grid admin-form" novalidate>
+          <div class="form-field"><label for="doctorProfilePhone">الهاتف</label><input id="doctorProfilePhone" type="tel" inputmode="tel" required></div>
+          <div class="form-field"><label for="doctorProfileSlot">مدة الموعد بالدقائق</label><input id="doctorProfileSlot" type="number" min="15" max="180" required></div>
+          <div class="form-field"><label for="doctorProfileStart">بداية العمل</label><input id="doctorProfileStart" type="number" min="0" max="23" required></div>
+          <div class="form-field"><label for="doctorProfileEnd">نهاية العمل</label><input id="doctorProfileEnd" type="number" min="1" max="24" required></div>
+          <fieldset class="form-field form-field-full admin-days"><legend>أيام العمل</legend><div id="doctorProfileDays" class="chips"></div></fieldset>
+          <div class="form-field form-field-full"><label for="doctorProfileBio">السيرة الذاتية الظاهرة للمرضى</label><textarea id="doctorProfileBio" rows="5" maxlength="1000" placeholder="اكتب خبرتك ومجالات اهتمامك..."></textarea><span class="field-error" id="doctorProfileError" aria-live="polite"></span></div>
+          <div class="panel-actions form-field-full"><button type="submit" class="btn btn-primary">حفظ التعديلات</button></div>
+        </form>
+      </section>
+      <section class="stat-grid" aria-label="إحصاءات الطبيب">
+        <div class="stat-card is-accent"><span class="stat-icon">📅</span><strong class="stat-value" id="statUpcoming">0</strong><span class="stat-label">مواعيد قادمة</span></div>
+        <div class="stat-card"><span class="stat-icon">👥</span><strong class="stat-value" id="statPatients">0</strong><span class="stat-label">مرضى فريدون</span></div>
+        <div class="stat-card"><span class="stat-icon">⏳</span><strong class="stat-value" id="statPending">0</strong><span class="stat-label">قيد المراجعة</span></div>
+        <div class="stat-card"><span class="stat-icon">✔️</span><strong class="stat-value" id="statCompleted">0</strong><span class="stat-label">مواعيد مكتملة</span></div>
+        <div class="stat-card"><span class="stat-icon">🩺</span><strong class="stat-value" id="statVisits">0</strong><span class="stat-label">إجمالي الزيارات</span></div>
+      </section>
+      <section class="section-block"><div class="section-head"><h2>بيانات العمل</h2></div><div class="profile-details" id="workDetails"></div></section>
+      <section class="section-block"><div class="section-head"><h2>مواعيدي القادمة</h2></div><div class="table-wrap"><table class="data-table"><thead><tr><th>المريض</th><th>التاريخ والوقت</th><th>المكان</th><th>الحالة</th><th class="no-print">إجراء</th></tr></thead><tbody id="upcomingAppointments" aria-live="polite"></tbody></table><p class="empty-note" id="emptyAppointments" hidden>لا توجد مواعيد قادمة</p></div></section>
+    </div>
+  </main>
+  <footer class="site-footer no-print">© 2026 عيادة الشفاء الطبية</footer>
+  <script src="../js/data.js?v=doctor-profile-2"></script><script src="../js/storage.js?v=doctor-profile-2"></script><script src="../js/doctor-profile.js?v=doctor-profile-2"></script>
+</body>
+</html>

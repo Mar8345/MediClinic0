@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة المرضى | لوحة السكرتير — عيادة الشفاء الطبية</title>
+  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body data-page="secretary-patients">
+
+  <nav class="role-nav no-print" aria-label="تنقل لوحة السكرتير">
+    <div class="container role-nav-inner">
+      <a href="../index.html" class="brand">
+        <img src="../assets/logo.svg" alt="شعار العيادة" class="logo">
+        <span>عيادة الشفاء<small>لوحة السكرتير</small></span>
+      </a>
+      <a href="dashboard.html" class="nav-item">📊 لوحة التحكم</a>
+      <a href="appointments.html" class="nav-item">📅 المواعيد</a>
+      <a href="referrals.html" class="nav-item">🔁 التحويل للطبيب</a>
+      <a href="patients.html" class="nav-item is-active" aria-current="page">👥 المرضى</a>
+      <a href="profile.html" class="nav-item">👤 ملفي</a>
+      <span class="nav-spacer"></span>
+      <span class="sec-user" id="secUserName"></span>
+      <button type="button" class="btn btn-outline btn-sm" id="logoutBtn">خروج</button>
+    </div>
+  </nav>
+
+  <main class="container role-content" id="printRoot">
+
+    <!-- بوابة الدخول التجريبية -->
+    <section id="loginGate" hidden>
+      <div class="login-card">
+        <span class="role-icon" aria-hidden="true">🗂️</span>
+        <h1>دخول لوحة السكرتير</h1>
+        <p class="text-muted">دخول تجريبي للواجهة فقط — لا توجد مصادقة حقيقية في هذه النسخة.</p>
+        <form id="loginForm" novalidate>
+          <div class="form-field">
+            <label for="loginUser">اسم المستخدم</label>
+            <input type="text" id="loginUser" value="secretary" autocomplete="username">
+          </div>
+          <div class="form-field">
+            <label for="loginPin">الرقم السري</label>
+            <input type="password" id="loginPin" inputmode="numeric" autocomplete="current-password" placeholder="••••">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">دخول</button>
+          <p class="demo-hint">بيانات الدخول المحلية: <code>secretary</code> / <code>1234</code></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- محتوى الصفحة -->
+    <div id="secContent" hidden>
+      <div class="app-toolbar no-print">
+        <div class="toolbar-row">
+          <div class="search-input">
+            <span class="search-icon" aria-hidden="true">🔍</span>
+            <input type="search" id="patientSearch" placeholder="ابحث بالاسم أو الموبايل أو الرقم القومي" aria-label="بحث في المرضى">
+          </div>
+          <div class="select">
+            <select id="patientsSort" aria-label="ترتيب المرضى">
+              <option value="name">ترتيب: الاسم</option>
+              <option value="count">ترتيب: عدد المواعيد</option>
+              <option value="upcoming">ترتيب: الموعد القادم</option>
+            </select>
+          </div>
+          <span class="nav-spacer"></span>
+          <button type="button" class="btn btn-primary btn-sm" id="newPatientBtn">＋ مريض جديد</button>
+          <button type="button" class="btn btn-outline btn-sm" id="csvPatientsBtn">⬇️ CSV</button>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <h2 class="result-count" id="resultCount">0 مريض</h2>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th class="sortable" data-sort="name" aria-sort="none">المريض</th>
+              <th>الموبايل</th>
+              <th>الرقم القومي</th>
+              <th>العمر / النوع</th>
+              <th class="sortable" data-sort="count" aria-sort="none">المواعيد</th>
+              <th class="sortable" data-sort="upcoming" aria-sort="none">الموعد القادم</th>
+              <th class="no-print">إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="patientsTableBody"></tbody>
+        </table>
+        <p class="empty-note" id="emptyPatients" hidden>لا يوجد مرضى مطابقون للبحث</p>
+      </div>
+
+      <!-- نافذة ملف المريض -->
+      <div class="modal-overlay" id="patientModal" hidden>
+        <div class="modal modal-lg" role="dialog" aria-modal="true" aria-labelledby="patientModalTitle">
+          <h3 id="patientModalTitle">ملف المريض</h3>
+          <form id="patientForm" novalidate>
+            <div class="form-grid">
+              <div class="form-field">
+                <label for="pName">الاسم بالكامل <span class="req" aria-hidden="true">*</span></label>
+                <input type="text" id="pName" autocomplete="name">
+                <span class="field-error" data-error-for="pName" aria-live="polite"></span>
+              </div>
+              <div class="form-field">
+                <label for="pPhone">رقم الموبايل <span class="req" aria-hidden="true">*</span></label>
+                <input type="tel" id="pPhone" inputmode="numeric" maxlength="11" placeholder="01xxxxxxxxx">
+                <span class="field-error" data-error-for="pPhone" aria-live="polite"></span>
+              </div>
+              <div class="form-field">
+                <label for="pNationalId">الرقم القومي <span class="req" aria-hidden="true">*</span></label>
+                <input type="text" id="pNationalId" inputmode="numeric" maxlength="14" placeholder="14 رقمًا">
+                <span class="field-error" data-error-for="pNationalId" aria-live="polite"></span>
+              </div>
+              <div class="form-field">
+                <label for="pAge">العمر <span class="req" aria-hidden="true">*</span></label>
+                <input type="number" id="pAge" min="0" max="120">
+                <span class="field-error" data-error-for="pAge" aria-live="polite"></span>
+              </div>
+              <div class="form-field">
+                <label for="pGender">النوع <span class="req" aria-hidden="true">*</span></label>
+                <select id="pGender">
+                  <option value="">— اختر —</option>
+                  <option value="male">ذكر</option>
+                  <option value="female">أنثى</option>
+                </select>
+                <span class="field-error" data-error-for="pGender" aria-live="polite"></span>
+              </div>
+            </div>
+          </form>
+          <h4 class="sub-title">مواعيد المريض</h4>
+          <div class="timeline" id="patientAppointmentsList"></div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-outline" data-close>إلغاء</button>
+            <button type="button" class="btn btn-primary" id="patientSave">حفظ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="site-footer no-print">
+    <div class="container">© 2026 عيادة الشفاء الطبية — لوحة السكرتير</div>
+  </footer>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/storage.js?v=secretary-signup-1"></script>
+  <script src="../js/secretary.js?v=secretary-signup-1"></script>
+</body>
+</html>

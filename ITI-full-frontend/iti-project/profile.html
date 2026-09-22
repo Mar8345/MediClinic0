@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ملفي الطبي | عيادة الشفاء الطبية</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/main.css?v=commercial-ui-2">
+  <link rel="stylesheet" href="css/components.css?v=commercial-ui-2">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand">
+        <img src="assets/logo.svg" alt="شعار العيادة" class="logo">
+        <span>عيادة الشفاء الطبية<small>ملفي الطبي</small></span>
+      </a>
+      <div class="header-links">
+        <a href="booking.html" class="btn btn-primary btn-sm">＋ حجز جديد</a>
+        <a href="index.html" class="btn btn-outline btn-sm">← الرئيسية</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container page-main">
+    <!-- بوابة دخول المريض -->
+    <section id="patientLoginGate" hidden>
+      <div class="page-head">
+        <h1>ملفي الطبي</h1>
+        <p>تابع حجوزاتك: القادمة، قيد المراجعة، المؤكدة، والمرفوضة.</p>
+      </div>
+      <div class="login-card">
+        <span class="role-icon" aria-hidden="true">م</span>
+        <h2>تسجيل دخول المريض</h2>
+        <p class="text-muted">ادخل بالبريد الإلكتروني والرقم السري للوصول إلى ملفك الطبي.</p>
+        <form id="patientLoginForm" novalidate>
+          <div class="form-field">
+            <label for="patientLoginEmail">البريد الإلكتروني <span class="req" aria-hidden="true">*</span></label>
+            <input type="email" id="patientLoginEmail" autocomplete="email" placeholder="name@example.com" dir="ltr">
+            <span class="field-error" id="patientLoginEmailError" aria-live="polite"></span>
+          </div>
+          <div class="form-field">
+            <label for="patientLoginPassword">الرقم السري <span class="req" aria-hidden="true">*</span></label>
+            <input type="password" id="patientLoginPassword" autocomplete="current-password">
+            <span class="field-error" id="patientLoginPasswordError" aria-live="polite"></span>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">عرض ملفي</button>
+          <p class="demo-hint">ليس لديك حساب؟ <a href="patient-login.html">أنشئ حساب مريض جديدًا</a></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- محتوى الملف -->
+    <div id="patientContent" hidden>
+      <div class="profile-card" id="profileCard"></div>
+
+      <section class="stat-grid" id="myStats" aria-label="ملخص حجوزاتي">
+        <div class="stat-card is-accent"><span class="stat-icon" aria-hidden="true">01</span><strong class="stat-value" id="statUpcoming">0</strong><span class="stat-label">مواعيد قادمة</span></div>
+        <div class="stat-card"><span class="stat-icon" aria-hidden="true">02</span><strong class="stat-value" id="statPending">0</strong><span class="stat-label">قيد المراجعة</span></div>
+        <div class="stat-card"><span class="stat-icon" aria-hidden="true">03</span><strong class="stat-value" id="statApproved">0</strong><span class="stat-label">مؤكدة</span></div>
+        <div class="stat-card"><span class="stat-icon" aria-hidden="true">04</span><strong class="stat-value" id="statRejected">0</strong><span class="stat-label">مرفوضة</span></div>
+      </section>
+
+      <div class="section-head">
+        <h2>حجوزاتي</h2>
+        <div class="segmented" id="apptFilterChips" role="group" aria-label="تصفية الحجوزات"></div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr><th>الطبيب / المكان</th><th>التاريخ والوقت</th><th>رقم الحجز</th><th>الحالة</th><th class="no-print">إجراء</th></tr>
+          </thead>
+          <tbody id="patientAppointments"></tbody>
+        </table>
+        <p class="empty-note" id="emptyAppts" hidden>لا توجد حجوزات في هذا التصنيف</p>
+      </div>
+
+      <div class="panel-actions">
+        <a href="booking.html" class="btn btn-primary" id="selectedDoctorBookingBtn" hidden>احجز مع الطبيب المختار</a>
+        <a href="booking.html" class="btn btn-primary">حجز موعد جديد</a>
+        <button type="button" class="btn btn-outline" id="patientLogoutBtn">تسجيل الخروج</button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">© 2026 عيادة الشفاء الطبية — نظام حجز المواعيد</div>
+  </footer>
+
+  <script src="js/data.js?v=commercial-ui-2"></script>
+  <script src="js/storage.js?v=commercial-ui-2"></script>
+  <script src="js/patient.js?v=commercial-ui-2"></script>
+</body>
+</html>

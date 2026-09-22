@@ -1,0 +1,11 @@
+{
+  "users": 4,
+  "doctors": 1,
+  "patients": 1,
+  "appointments": 1,
+  "medical_records": 0,
+  "prescriptions": 0,
+  "billing": 0,
+  "audit_logs": 0,
+  "system_settings": 0
+}

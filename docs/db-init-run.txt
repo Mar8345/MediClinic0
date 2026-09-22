@@ -1,0 +1,1 @@
+Database initialized: /mnt/data/clinic-platform/database/clinic.db

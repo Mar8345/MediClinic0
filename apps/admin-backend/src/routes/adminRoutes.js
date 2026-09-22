@@ -1,0 +1,13 @@
+const router = require('express').Router();
+const { requireAuth } = require('@clinic/common');
+const c = require('../controllers/adminController');
+router.use(requireAuth('ADMIN'));
+router.get('/analytics', c.analytics);
+router.get('/staff', c.staffList);
+router.post('/staff', c.staff);
+router.put('/staff/:id', c.updateStaff);
+router.delete('/staff/:id', c.deleteStaff);
+router.get('/logs', c.logs);
+router.get('/settings', c.settings);
+router.put('/settings', c.updateSettings);
+module.exports = router;

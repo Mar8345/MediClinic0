@@ -1,0 +1,230 @@
+/* ============================================================
+   main.css — نظام التصميم (Design System)
+   عيادة الشفاء الطبية — نظام حجز المواعيد
+   Mobile-First / RTL — 320px → 1440px
+   ============================================================ */
+
+/* ---------- متغيرات التصميم (Design Tokens) ---------- */
+:root {
+  /* الألوان */
+  --primary: #0b7a75;
+  --primary-dark: #075e5a;
+  --primary-light: #a7e8e0;
+  --primary-soft: #edf9f7;
+
+  --navy: #17324d;
+  --navy-deep: #0d2438;
+  --cyan: #159a9c;
+  --bg: #f2f6f8;
+  --surface: #ffffff;
+  --text: #17324d;
+  --text-muted: #52677a;
+  --border: #d2e0e6;
+
+  --success: #16a34a;  --success-bg: #dcfce7;
+  --danger: #dc2626;   --danger-bg: #fee2e2;
+  --warning: #b45309;  --warning-bg: #fef3c7;
+  --info: #0369a1;     --info-bg: #e0f2fe;
+
+  /* المقاسات والظلال */
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 2px 8px rgba(23, 50, 77, .05);
+  --shadow: 0 8px 24px rgba(23, 50, 77, .07);
+  --shadow-lg: 0 14px 34px rgba(23, 50, 77, .11);
+  --transition: .22s ease;
+  --header-h: 72px;
+}
+
+/* ---------- إعادة الضبط (Reset) ---------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: "Segoe UI", Tahoma, system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.65;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+img, svg { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+ul, ol { list-style: none; }
+[hidden] { display: none !important; }
+
+main { flex: 1; width: 100%; }
+.container { width: 100%; max-width: 1180px; margin-inline: auto; padding-inline: 18px; }
+
+/* ---------- الهيدر ---------- */
+.site-header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 0 rgba(16, 42, 67, .06), 0 8px 24px rgba(16, 42, 67, .04);
+}
+.header-inner {
+  height: var(--header-h);
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.brand { display: flex; align-items: center; gap: 11px; color: var(--navy); }
+.brand .logo { width: 42px; height: 42px; flex: none; }
+.brand span { font-weight: 800; font-size: 1rem; line-height: 1.25; }
+.brand small { display: block; font-size: .7rem; font-weight: 500; color: var(--text-muted); }
+
+/* ---------- عناوين الصفحات والأقسام ---------- */
+.page-main { padding: 34px 0 56px; }
+.section { padding: 64px 0; }
+.page-head { text-align: center; margin-bottom: 28px; }
+.page-head h1, .page-head h2 { font-size: 1.55rem; letter-spacing: .01em; margin-bottom: 8px; }
+.page-head p { color: var(--text-muted); font-size: .95rem; }
+
+/* ---------- البطل (Hero) ---------- */
+.hero {
+  background: var(--navy-deep);
+  color: #fff;
+  border-bottom: 4px solid var(--cyan);
+  padding: 72px 0 78px; text-align: center;
+}
+.hero h1 { font-size: 1.8rem; line-height: 1.4; margin-bottom: 14px; }
+.hero p { color: #c8d9e6; max-width: 620px; margin: 0 auto 28px; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+.text-primary { color: #5eead4; }
+.text-muted { color: var(--text-muted); }
+
+/* ---------- الفوتر ---------- */
+.site-footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 24px 0; text-align: center;
+  color: var(--text-muted); font-size: .85rem; margin-top: 40px;
+}
+
+/* ---------- بطاقات الأدوار (index) ---------- */
+.role-grid { display: grid; gap: 16px; }
+.role-card {
+  background: var(--surface);
+  border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 28px 20px; text-align: center;
+  box-shadow: var(--shadow-sm); transition: all var(--transition);
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.role-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
+.role-card h3 { font-size: 1.15rem; }
+.role-card p { color: var(--text-muted); font-size: .9rem; flex: 1; }
+.role-icon { font-size: 2.4rem; line-height: 1.2; }
+.role-cta { color: var(--primary); font-weight: 700; font-size: .9rem; }
+.role-card.is-locked { opacity: .65; cursor: not-allowed; }
+.role-card.is-locked:hover { transform: none; box-shadow: var(--shadow-sm); border-color: var(--border); }
+.role-card-admin { border-color: var(--primary-light); }
+
+/* ---------- شريط معلومات العيادة ---------- */
+.info-strip { display: grid; gap: 12px; }
+.info-item {
+  background: var(--surface);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px; display: flex; flex-direction: column; gap: 4px; font-size: .9rem;
+}
+.info-item strong { color: var(--primary-dark); }
+
+/* ---------- صفحات الأدوار (لوحات النظام) ---------- */
+.page-title { font-size: 1.1rem; }
+.muted { color: var(--text-muted); font-size: .85rem; }
+.sec-user { display: none; font-size: .85rem; font-weight: 700; color: var(--text-muted); }
+.role-nav {
+  position: sticky; top: 0; z-index: 90;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 0 rgba(16, 42, 67, .06), 0 8px 24px rgba(16, 42, 67, .04);
+}
+.role-nav-inner {
+  height: var(--header-h);
+  display: flex; align-items: center; gap: 6px;
+  overflow-x: auto; scrollbar-width: none;
+}
+.role-nav-inner::-webkit-scrollbar { display: none; }
+.role-nav .nav-item {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 12px; border-radius: var(--radius-sm);
+  font-weight: 600; font-size: .85rem; color: var(--text-muted); white-space: nowrap;
+}
+.role-nav .nav-item:hover { color: var(--primary); background: var(--primary-soft); }
+.role-nav .nav-item.is-active { background: var(--primary); color: #fff; }
+.nav-spacer { flex: 1; }
+.role-content { padding: 20px 0 40px; }
+
+/* بوابة الدخول التجريبية */
+.login-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg); padding: 34px 24px; max-width: 430px; margin: 40px auto 0;
+  display: flex; flex-direction: column; gap: 12px; text-align: center;
+}
+.login-card h1 { font-size: 1.2rem; }
+.login-card .form-field { text-align: right; }
+.demo-hint { font-size: .78rem; color: var(--text-muted); margin-top: 6px; }
+.demo-hint code {
+  background: var(--bg); border-radius: 6px; padding: 2px 8px;
+  color: var(--primary-dark); font-weight: 700;
+}
+
+/* ---------- الطباعة ---------- */
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; }
+  .container { max-width: none; padding: 0; }
+  body.printing-card main > *:not(#printCard) { display: none !important; }
+  .appt-card { box-shadow: none; }
+  /* طباعة أوراق الطبيب: يُطبع ملف واحد فقط (الروشتة / التقرير / الإجازة) */
+  body.printing-doc > *:not(.rx-sheet) { display: none !important; }
+  body.printing-doc .rx-sheet { display: none !important; }
+  body.printing-doc .rx-sheet.is-printing,
+  body.printing-doc .rx-sheet.is-printing .report-sheet { display: block !important; }
+  body.printing-doc .rx-sheet { box-shadow: none; max-width: none; padding: 0; }
+}
+
+/* ---------- Media Queries (تصاعديًا من الموبايل) ---------- */
+@media (min-width: 640px) {
+  .hero { padding: 90px 0 96px; }
+  .hero h1 { font-size: 2.5rem; }
+  .role-grid { grid-template-columns: repeat(3, 1fr); }
+  .info-strip { grid-template-columns: repeat(3, 1fr); }
+  .page-head h1, .page-head h2 { font-size: 1.6rem; }
+  .admin-two-col { grid-template-columns: minmax(220px, .8fr) minmax(0, 1.6fr); }
+}
+@media (max-width: 520px) {
+  .header-inner { min-height: var(--header-h); height: auto; padding-block: 10px; }
+  .header-actions { gap: 6px; }
+  .header-actions .btn { padding-inline: 10px; font-size: .78rem; }
+}
+@media (min-width: 1024px) {
+  .container { padding-inline: 28px; }
+}
+
+/* ---------- UX refinement: calm clinical system ---------- */
+:root {
+  --focus-ring: #0e7490;
+  --surface-raised: #ffffff;
+  --surface-soft: #eef7f8;
+  --text-strong: #0b2239;
+}
+
+body { background: #f3f8fa; }
+h1, h2, h3, h4 { color: var(--text-strong); letter-spacing: 0; }
+a { text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 3px solid var(--focus-ring); outline-offset: 3px;
+}
+.site-header, .role-nav { backdrop-filter: blur(12px); background: rgba(255, 255, 255, .94); }
+.header-inner, .role-nav-inner { min-height: var(--header-h); }
+.hero { position: relative; overflow: hidden; background: var(--navy-deep); }
+.hero::after { content: ''; position: absolute; inset: auto 0 0; height: 1px; background: rgba(94, 234, 212, .7); }
+.hero .container { position: relative; z-index: 1; }
+.page-main, .role-content { padding-top: 32px; }
+.page-head p { max-width: 680px; margin-inline: auto; }
+.eyebrow { color: var(--primary); font-size: .78rem !important; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 10px !important; }
+.hero .eyebrow { color: #8ce7dc; }
+.hero .btn-outline { background: rgba(255, 255, 255, .08); border-color: rgba(255, 255, 255, .45); color: #fff; }
+

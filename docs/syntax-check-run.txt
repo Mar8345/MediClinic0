@@ -1,0 +1,24 @@
+PASS apps/admin-backend/src/controllers/adminController.js
+PASS apps/admin-backend/src/routes/adminRoutes.js
+PASS apps/admin-backend/src/server.js
+PASS apps/doctor-backend/src/controllers/doctorController.js
+PASS apps/doctor-backend/src/routes/doctorRoutes.js
+PASS apps/doctor-backend/src/server.js
+PASS apps/patient-backend/src/controllers/patientController.js
+PASS apps/patient-backend/src/routes/appointmentRoutes.js
+PASS apps/patient-backend/src/routes/patientRoutes.js
+PASS apps/patient-backend/src/server.js
+PASS apps/secretary-backend/src/controllers/secretaryController.js
+PASS apps/secretary-backend/src/routes/secretaryRoutes.js
+PASS apps/secretary-backend/src/server.js
+PASS database/init.js
+PASS database/seed.js
+PASS packages/common/src/app.js
+PASS packages/common/src/db.js
+PASS packages/common/src/index.js
+PASS packages/common/src/middleware.js
+PASS packages/common/src/security.js
+PASS scripts/requirements-audit.js
+PASS scripts/syntax-check.js
+
+Syntax check passed for 22 JavaScript files.

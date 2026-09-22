@@ -1,0 +1,22 @@
+{
+  "name": "clinic-platform-backends",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Four role-specific Node.js + Express backends sharing a SQLite database for a clinic management platform.",
+  "workspaces": ["apps/*", "packages/common"],
+  "engines": { "node": ">=22.0.0" },
+  "scripts": {
+    "db:init": "node database/init.js",
+    "db:seed": "node database/seed.js",
+    "audit": "node scripts/requirements-audit.js",
+    "syntax": "node scripts/syntax-check.js",
+    "start:doctor": "node apps/doctor-backend/src/server.js",
+    "start:patient": "node apps/patient-backend/src/server.js",
+    "start:secretary": "node apps/secretary-backend/src/server.js",
+    "start:admin": "node apps/admin-backend/src/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  }
+}

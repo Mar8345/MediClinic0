@@ -1,0 +1,10 @@
+const router = require('express').Router();
+const { requireAuth } = require('@clinic/common');
+const c = require('../controllers/doctorController');
+router.use(requireAuth('DOCTOR'));
+router.get('/appointments', c.listAppointments);
+router.post('/medical-records', c.addMedicalRecord);
+router.put('/medical-records/:id', c.updateMedicalRecord);
+router.post('/prescriptions', c.issuePrescription);
+router.get('/patients/:patientId/medical-history', c.patientHistory);
+module.exports = router;

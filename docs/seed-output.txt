@@ -1,0 +1,25 @@
+{
+  "message": "Seed completed",
+  "demoAccounts": [
+    {
+      "role": "ADMIN",
+      "email": "admin@clinic.local",
+      "password": "Admin@12345"
+    },
+    {
+      "role": "DOCTOR",
+      "email": "doctor@clinic.local",
+      "password": "Doctor@12345"
+    },
+    {
+      "role": "SECRETARY",
+      "email": "secretary@clinic.local",
+      "password": "Secretary@12345"
+    },
+    {
+      "role": "PATIENT",
+      "email": "patient@clinic.local",
+      "password": "Patient@12345"
+    }
+  ]
+}

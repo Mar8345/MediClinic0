@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة President | عيادة الشفاء الطبية</title>
+  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body data-page="president-dashboard">
+  <nav class="role-nav no-print" aria-label="تنقل لوحة الإدارة">
+    <div class="container role-nav-inner">
+      <a href="../index.html" class="brand"><img src="../assets/logo.svg" alt="شعار العيادة" class="logo"><span>عيادة الشفاء<small>لوحة President</small></span></a>
+      <a href="#overview" class="nav-item is-active">📊 الملخص</a>
+      <a href="#doctors" class="nav-item">👨‍⚕️ الأطباء</a>
+      <a href="#staff" class="nav-item">🗂️ السكرتارية</a>
+      <a href="#operations" class="nav-item">📅 التشغيل</a>
+      <span class="nav-spacer"></span>
+      <span class="sec-user" id="presidentUserName"></span>
+      <button type="button" class="btn btn-outline btn-sm" id="logoutBtn">خروج</button>
+    </div>
+  </nav>
+
+  <main class="container role-content">
+    <section id="loginGate" hidden>
+      <div class="login-card">
+        <span class="role-icon" aria-hidden="true">🏛️</span>
+        <h1>دخول لوحة President</h1>
+        <p class="text-muted">إدارة الأطباء والسكرتارية والمواعيد من مكان واحد.</p>
+        <form id="loginForm" novalidate>
+          <div class="form-field"><label for="loginUser">البريد الإلكتروني</label><input id="loginUser" type="email" value="president@president.com" autocomplete="username"></div>
+          <div class="form-field"><label for="loginPin">الرقم السري</label><input id="loginPin" type="password" inputmode="numeric" autocomplete="current-password"></div>
+          <button class="btn btn-primary btn-block" type="submit">دخول لوحة الإدارة</button>
+          <p class="demo-hint">بيانات الدخول المحلية: <code>president@president.com</code> / <code>123456</code></p>
+        </form>
+      </div>
+    </section>
+
+    <div id="presidentContent" hidden>
+      <div class="app-toolbar no-print"><div class="toolbar-row"><h1 class="page-title">🏛️ لوحة إدارة العيادة</h1><span class="nav-spacer"></span><button class="btn btn-outline btn-sm" id="refreshBtn" type="button">🔄 تحديث</button></div></div>
+
+      <section id="overview" class="stat-grid" aria-label="مؤشرات الإدارة">
+        <div class="stat-card"><span class="stat-icon">👨‍⚕️</span><strong class="stat-value" id="statDoctors">0</strong><span class="stat-label">الأطباء النشطون</span></div>
+        <div class="stat-card"><span class="stat-icon">🗂️</span><strong class="stat-value" id="statStaff">0</strong><span class="stat-label">السكرتارية النشطة</span></div>
+        <div class="stat-card"><span class="stat-icon">👥</span><strong class="stat-value" id="statPatients">0</strong><span class="stat-label">المرضى</span></div>
+        <div class="stat-card is-accent"><span class="stat-icon">📅</span><strong class="stat-value" id="statAppointments">0</strong><span class="stat-label">المواعيد</span></div>
+        <div class="stat-card"><span class="stat-icon">🩺</span><strong class="stat-value" id="statVisits">0</strong><span class="stat-label">الزيارات</span></div>
+        <div class="stat-card"><span class="stat-icon">📍</span><strong class="stat-value" id="statBranches">0</strong><span class="stat-label">الفروع</span></div>
+      </section>
+
+      <section id="doctors" class="admin-section">
+        <div class="section-head"><div><h2>إدارة الأطباء</h2><p class="muted">إضافة الطبيب وتحديد الفرع وجدول العمل أو أرشفته.</p></div><button class="btn btn-primary btn-sm" id="newDoctorBtn" type="button">＋ طبيب جديد</button></div>
+        <form id="doctorForm" class="form-grid admin-form" hidden>
+          <input type="hidden" id="doctorId">
+          <div class="form-field"><label for="doctorName">اسم الطبيب</label><input id="doctorName" required></div>
+          <div class="form-field"><label for="doctorSpecialty">التخصص</label><input id="doctorSpecialty" required></div>
+          <div class="form-field"><label for="doctorEmail">البريد الإلكتروني</label><input id="doctorEmail" type="email" dir="ltr" readonly></div>
+          <div class="form-field"><label for="doctorPhone">الهاتف</label><input id="doctorPhone" inputmode="tel"></div>
+          <div class="form-field"><label for="doctorBranch">الفرع</label><select id="doctorBranch"></select></div>
+          <div class="form-field"><label for="doctorRoom">الغرفة</label><input id="doctorRoom" placeholder="عيادة 101 — الدور الأول"></div>
+          <div class="form-field"><label for="doctorStart">بداية العمل</label><input id="doctorStart" type="number" min="0" max="23" value="9"></div>
+          <div class="form-field"><label for="doctorEnd">نهاية العمل</label><input id="doctorEnd" type="number" min="1" max="24" value="16"></div>
+          <div class="form-field"><label for="doctorSlot">مدة الموعد بالدقائق</label><input id="doctorSlot" type="number" min="15" max="180" value="30"></div>
+          <fieldset class="form-field admin-days"><legend>أيام العمل</legend><div id="doctorDays" class="chips"></div></fieldset>
+          <div class="panel-actions"><button class="btn btn-outline" id="cancelDoctorBtn" type="button">إلغاء</button><button class="btn btn-primary" type="submit">حفظ الطبيب</button></div>
+        </form>
+        <div class="table-wrap"><table class="data-table"><thead><tr><th>الطبيب</th><th>التخصص</th><th>الحساب</th><th>الفرع والجدول</th><th>الحالة</th><th class="no-print">إجراءات</th></tr></thead><tbody id="doctorsBody"></tbody></table><p class="empty-note" id="emptyDoctors" hidden>لا يوجد أطباء.</p></div>
+      </section>
+
+      <section id="staff" class="admin-section">
+        <div class="section-head"><div><h2>إدارة السكرتارية</h2><p class="muted">الحسابات المؤرشفة لا تستطيع تسجيل الدخول ولا تُحذف من السجل.</p></div><button class="btn btn-primary btn-sm" id="newStaffBtn" type="button">＋ سكرتير جديد</button></div>
+        <div class="table-wrap" id="pendingStaffSection">
+          <h3 class="sub-title">طلبات التسجيل الجديدة</h3>
+          <table class="data-table"><thead><tr><th>الاسم</th><th>البريد الإلكتروني</th><th>الهاتف</th><th>تاريخ الطلب</th><th>الحالة</th><th class="no-print">إجراء</th></tr></thead><tbody id="pendingStaffBody"></tbody></table>
+          <p class="empty-note" id="emptyPendingStaff" hidden>لا توجد طلبات معلقة.</p>
+        </div>
+        <form id="staffForm" class="form-grid admin-form" hidden>
+          <input type="hidden" id="staffId">
+          <div class="form-field"><label for="staffName">الاسم</label><input id="staffName" required></div>
+          <div class="form-field"><label for="staffUser">اسم المستخدم</label><input id="staffUser" required autocomplete="username"></div>
+          <div class="form-field"><label for="staffPin">الرقم السري</label><input id="staffPin" required inputmode="numeric" autocomplete="new-password"></div>
+          <div class="panel-actions"><button class="btn btn-outline" id="cancelStaffBtn" type="button">إلغاء</button><button class="btn btn-primary" type="submit">حفظ الحساب</button></div>
+        </form>
+        <div class="table-wrap"><table class="data-table"><thead><tr><th>الاسم</th><th>اسم المستخدم / البريد</th><th>الدور</th><th>الحالة</th><th class="no-print">إجراءات</th></tr></thead><tbody id="staffBody"></tbody></table></div>
+      </section>
+
+      <section id="operations" class="admin-section">
+        <div class="section-head"><div><h2>التشغيل والتقارير</h2><p class="muted">عرض سريع للمواعيد والمرضى والفروع دون تغيير سجلاتهم.</p></div><button class="btn btn-outline btn-sm" id="exportBtn" type="button">⬇️ تصدير تقرير CSV</button></div>
+        <div class="admin-two-col">
+          <div class="chart-card"><h3>الفروع</h3><div id="branchesList"></div></div>
+          <div class="chart-card"><h3>آخر المواعيد</h3><div class="table-wrap"><table class="data-table"><thead><tr><th>المريض</th><th>الطبيب</th><th>التاريخ</th><th>الحالة</th></tr></thead><tbody id="appointmentsBody"></tbody></table></div></div>
+        </div>
+        <div class="table-wrap admin-list-table"><table class="data-table"><thead><tr><th>المريض</th><th>الهاتف</th><th>عدد المواعيد</th><th>آخر موعد</th></tr></thead><tbody id="patientsBody"></tbody></table></div>
+      </section>
+    </div>
+  </main>
+  <footer class="site-footer no-print">© 2026 عيادة الشفاء الطبية — لوحة الإدارة</footer>
+  <script src="../js/data.js?v=doctor-signup-1"></script>
+  <script src="../js/storage.js?v=secretary-signup-1"></script>
+  <script src="../js/president.js?v=secretary-signup-1"></script>
+</body>
+</html>

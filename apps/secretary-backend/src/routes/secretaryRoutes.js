@@ -1,0 +1,12 @@
+const router = require('express').Router();
+const { requireAuth } = require('@clinic/common');
+const c = require('../controllers/secretaryController');
+router.use(requireAuth('SECRETARY'));
+router.post('/patients/walk-in', c.registerWalkIn);
+router.post('/appointments', c.scheduleAppointment);
+router.put('/appointments/:id', c.reschedule);
+router.get('/queue', c.queue);
+router.patch('/queue/:id/status', c.updateQueueStatus);
+router.post('/billing', c.billing);
+router.get('/billing/:id', c.getInvoice);
+module.exports = router;
