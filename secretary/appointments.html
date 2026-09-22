@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة المواعيد | لوحة السكرتير — عيادة الشفاء الطبية</title>
+  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body data-page="secretary-appointments">
+
+  <nav class="role-nav no-print" aria-label="تنقل لوحة السكرتير">
+    <div class="container role-nav-inner">
+      <a href="../index.html" class="brand">
+        <img src="../assets/logo.svg" alt="شعار العيادة" class="logo">
+        <span>عيادة الشفاء<small>لوحة السكرتير</small></span>
+      </a>
+      <a href="dashboard.html" class="nav-item">📊 لوحة التحكم</a>
+      <a href="appointments.html" class="nav-item is-active" aria-current="page">📅 المواعيد</a>
+      <a href="referrals.html" class="nav-item">🔁 التحويل للطبيب</a>
+      <a href="patients.html" class="nav-item">👥 المرضى</a>
+      <a href="profile.html" class="nav-item">👤 ملفي</a>
+      <span class="nav-spacer"></span>
+      <span class="sec-user" id="secUserName"></span>
+      <button type="button" class="btn btn-outline btn-sm" id="logoutBtn">خروج</button>
+    </div>
+  </nav>
+
+  <main class="container role-content" id="printRoot">
+
+    <!-- بوابة الدخول التجريبية -->
+    <section id="loginGate" hidden>
+      <div class="login-card">
+        <span class="role-icon" aria-hidden="true">🗂️</span>
+        <h1>دخول لوحة السكرتير</h1>
+        <p class="text-muted">دخول تجريبي للواجهة فقط — لا توجد مصادقة حقيقية في هذه النسخة.</p>
+        <form id="loginForm" novalidate>
+          <div class="form-field">
+            <label for="loginUser">اسم المستخدم</label>
+            <input type="text" id="loginUser" value="secretary" autocomplete="username">
+          </div>
+          <div class="form-field">
+            <label for="loginPin">الرقم السري</label>
+            <input type="password" id="loginPin" inputmode="numeric" autocomplete="current-password" placeholder="••••">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">دخول</button>
+          <p class="demo-hint">بيانات الدخول المحلية: <code>secretary</code> / <code>1234</code></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- محتوى الصفحة -->
+    <div id="secContent" hidden>
+      <div class="app-toolbar no-print">
+        <div class="toolbar-row">
+          <div class="search-input">
+            <span class="search-icon" aria-hidden="true">🔍</span>
+            <input type="search" id="searchInput" placeholder="ابحث بالاسم أو الموبايل أو رقم الحجز (APT-…)" aria-label="بحث في المواعيد">
+          </div>
+          <div class="select">
+            <select id="doctorFilter" aria-label="تصفية حسب الطبيب"></select>
+          </div>
+          <div class="select">
+            <select id="quickDates" aria-label="تصفية حسب التاريخ">
+              <option value="all">كل التواريخ</option>
+              <option value="today">اليوم</option>
+              <option value="tomorrow">غدًا</option>
+              <option value="week">خلال 7 أيام</option>
+            </select>
+          </div>
+          <div class="select">
+            <input type="date" id="dateFrom" aria-label="تاريخ محدد">
+          </div>
+        </div>
+        <div class="toolbar-row">
+          <div class="segmented" id="statusChips" role="group" aria-label="تصفية حسب الحالة"></div>
+          <span class="nav-spacer"></span>
+          <button type="button" class="btn btn-primary btn-sm" id="newAppointmentBtn">＋ حجز موعد جديد</button>
+          <button type="button" class="btn btn-outline btn-sm" id="csvBtn">⬇️ CSV</button>
+          <button type="button" class="btn btn-outline btn-sm" id="printBtn">🖨️ طباعة</button>
+        </div>
+      </div>
+
+      <div class="bulk-bar" id="bulkBar" role="region" aria-label="إجراءات جماعية">
+        <span id="bulkCount">0 محدد</span>
+        <button type="button" class="btn btn-success btn-sm" id="bulkApprove">✅ موافقة على المحدد</button>
+        <button type="button" class="btn btn-danger btn-sm" id="bulkReject">✖️ رفض المحدد</button>
+        <button type="button" class="btn btn-outline btn-sm" id="bulkClear">إلغاء التحديد</button>
+      </div>
+
+      <div class="tabs no-print" role="tablist" aria-label="عرض المواعيد">
+        <button type="button" class="tab is-active" id="tabAll" role="tab" aria-selected="true" aria-controls="viewAll">كل المواعيد</button>
+        <button type="button" class="tab" id="tabReception" role="tab" aria-selected="false" aria-controls="viewReception">🖥️ قائمة الاستقبال والانتظار</button>
+      </div>
+
+      <section id="viewAll" role="tabpanel" aria-labelledby="tabAll">
+        <div class="section-head">
+          <h2 class="result-count" id="resultCount">0 موعد</h2>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="no-print"><input type="checkbox" id="selectAll" aria-label="تحديد الكل"></th>
+                <th class="sortable" data-sort="datetime" aria-sort="none">التاريخ والوقت</th>
+                <th class="sortable" data-sort="patient" aria-sort="none">المريض</th>
+                <th class="sortable" data-sort="doctor" aria-sort="none">الطبيب / المكان</th>
+                <th>رقم الحجز</th>
+                <th>الحالة</th>
+                <th class="no-print">إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="appointmentsTableBody"></tbody>
+          </table>
+          <p class="empty-note" id="emptyAppointments" hidden>لا توجد مواعيد مطابقة للبحث</p>
+        </div>
+      </section>
+
+      <section id="viewReception" role="tabpanel" aria-labelledby="tabReception" hidden>
+        <div class="section-head">
+          <h2>قائمة الاستقبال والانتظار</h2>
+          <span class="muted" id="receptionDate"></span>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>الوقت</th><th>المريض</th><th>الطبيب / المكان</th><th>الحالة</th><th class="no-print">إجراء</th></tr>
+            </thead>
+            <tbody id="receptionBoard"></tbody>
+          </table>
+          <p class="empty-note" id="emptyReception" hidden>لا توجد مواعيد مؤكدة اليوم</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- نافذة التفاصيل -->
+    <div class="modal-overlay" id="detailModal" hidden>
+      <div class="modal modal-lg" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+        <h3 id="detailTitle">تفاصيل الموعد</h3>
+        <dl class="summary-list" id="detailBody"></dl>
+        <h4 class="sub-title">سجل الحالة</h4>
+        <div class="timeline" id="historyList"></div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline btn-sm" id="printCardBtn">🖨️ طباعة بطاقة الموعد</button>
+          <button type="button" class="btn btn-outline" data-close>إغلاق</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- نافذة الرفض -->
+    <div class="modal-overlay" id="rejectModal" hidden>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="rejectTitle">
+        <h3 id="rejectTitle">رفض طلب الحجز</h3>
+        <p class="text-muted">اكتب سبب الرفض بوضوح ليصل للمريض.</p>
+        <div class="form-field">
+          <label for="rejectReason">سبب الرفض <span class="req" aria-hidden="true">*</span></label>
+          <textarea id="rejectReason" rows="3" placeholder="مثال: الموعد محجوز بالكامل في هذا اليوم"></textarea>
+          <span class="field-error" id="rejectError" aria-live="polite"></span>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" data-close>إلغاء</button>
+          <button type="button" class="btn btn-danger" id="rejectSave">تأكيد الرفض</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- نافذة التأجيل -->
+    <div class="modal-overlay" id="rescheduleModal" hidden>
+      <div class="modal modal-lg" role="dialog" aria-modal="true" aria-labelledby="rescheduleTitle">
+        <h3 id="rescheduleTitle">تأجيل الموعد</h3>
+        <div class="selected-doctor" id="rescheduleInfo"></div>
+        <div class="form-field">
+          <label for="rescheduleDate">اليوم الجديد <span class="req" aria-hidden="true">*</span></label>
+          <input type="date" id="rescheduleDate">
+          <span class="field-error" id="rescheduleDateError" aria-live="polite"></span>
+        </div>
+        <h4 class="sub-title">الأوقات المتاحة</h4>
+        <div class="slots-grid" id="rescheduleSlots"></div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" data-close>إلغاء</button>
+          <button type="button" class="btn btn-primary" id="rescheduleSave" disabled>تأكيد التأجيل</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- نافذة حجز موعد جديد (هاتفي / استقبال) -->
+    <div class="modal-overlay" id="newApptModal" hidden>
+      <div class="modal modal-lg" role="dialog" aria-modal="true" aria-labelledby="newApptTitle">
+        <h3 id="newApptTitle">حجز موعد جديد (هاتفي / استقبال)</h3>
+        <form id="newApptForm" novalidate>
+          <div class="form-field">
+            <label for="patientLookup">المريض — ابحث برقم الموبايل أو الاسم <span class="req" aria-hidden="true">*</span></label>
+            <input type="search" id="patientLookup" placeholder="مثال: 01012345678 أو كريم">
+            <div class="lookup-results" id="lookupResults"></div>
+            <span class="field-error" id="patientError" aria-live="polite"></span>
+            <div class="lookup-selected" id="lookupSelected" hidden></div>
+            <button type="button" class="btn btn-outline btn-sm" id="toggleNewPatient" style="margin-top:8px">＋ مريض جديد</button>
+          </div>
+
+          <div class="form-grid" id="newPatientFields" hidden>
+            <div class="form-field">
+              <label for="npName">الاسم بالكامل <span class="req" aria-hidden="true">*</span></label>
+              <input type="text" id="npName" autocomplete="name">
+              <span class="field-error" data-error-for="npName" aria-live="polite"></span>
+            </div>
+            <div class="form-field">
+              <label for="npPhone">رقم الموبايل <span class="req" aria-hidden="true">*</span></label>
+              <input type="tel" id="npPhone" inputmode="numeric" maxlength="11" placeholder="01xxxxxxxxx">
+              <span class="field-error" data-error-for="npPhone" aria-live="polite"></span>
+            </div>
+            <div class="form-field">
+              <label for="npNationalId">الرقم القومي <span class="req" aria-hidden="true">*</span></label>
+              <input type="text" id="npNationalId" inputmode="numeric" maxlength="14" placeholder="14 رقمًا">
+              <span class="field-error" data-error-for="npNationalId" aria-live="polite"></span>
+            </div>
+            <div class="form-field">
+              <label for="npAge">العمر <span class="req" aria-hidden="true">*</span></label>
+              <input type="number" id="npAge" min="0" max="120">
+              <span class="field-error" data-error-for="npAge" aria-live="polite"></span>
+            </div>
+            <div class="form-field">
+              <label for="npGender">النوع <span class="req" aria-hidden="true">*</span></label>
+              <select id="npGender">
+                <option value="">— اختر —</option>
+                <option value="male">ذكر</option>
+                <option value="female">أنثى</option>
+              </select>
+              <span class="field-error" data-error-for="npGender" aria-live="polite"></span>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="apptDoctor">الطبيب <span class="req" aria-hidden="true">*</span></label>
+            <select id="apptDoctor"></select>
+            <span class="field-error" id="apptDoctorError" aria-live="polite"></span>
+          </div>
+
+          <div class="form-field">
+            <label>اليوم <span class="req" aria-hidden="true">*</span></label>
+            <div class="chips" id="apptDateChips"></div>
+          </div>
+
+          <h4 class="sub-title">الأوقات المتاحة</h4>
+          <div class="slots-grid" id="apptSlots"></div>
+          <span class="field-error" id="apptSlotError" aria-live="polite"></span>
+
+          <div class="form-field">
+            <label for="apptReason">سبب الزيارة <span class="req" aria-hidden="true">*</span></label>
+            <textarea id="apptReason" rows="2" placeholder="اكتب سبب الزيارة باختصار..."></textarea>
+            <span class="field-error" data-error-for="apptReason" aria-live="polite"></span>
+          </div>
+
+          <div class="selected-doctor" id="apptSummary" hidden></div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn btn-outline" data-close>إلغاء</button>
+            <button type="submit" class="btn btn-primary">حفظ الحجز (مؤكد)</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- بطاقة الموعد (تظهر فقط عند الطباعة) -->
+    <section id="printCard" hidden aria-label="بطاقة الموعد">
+      <div class="appt-card" id="printCardContent"></div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer no-print">
+    <div class="container">© 2026 عيادة الشفاء الطبية — لوحة السكرتير</div>
+  </footer>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/storage.js?v=secretary-signup-1"></script>
+  <script src="../js/secretary.js?v=secretary-signup-1"></script>
+</body>
+</html>

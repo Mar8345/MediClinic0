@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة الطبيب | عيادة الشفاء الطبية</title>
+  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body data-page="doctor-dashboard">
+
+  <nav class="role-nav no-print" aria-label="تنقل لوحة الطبيب">
+    <div class="container role-nav-inner">
+      <a href="../index.html" class="brand">
+        <img src="../assets/logo.svg" alt="شعار العيادة" class="logo">
+        <span>عيادة الشفاء<small>لوحة الطبيب</small></span>
+      </a>
+      <a href="dashboard.html" class="nav-item is-active" aria-current="page">🩺 قائمة اليوم</a>
+      <a href="profile.html" class="nav-item">👤 ملفي</a>
+      <span class="nav-spacer"></span>
+      <span class="sec-user" id="doctorUserName"></span>
+      <button type="button" class="btn btn-outline btn-sm" id="doctorLogoutBtn">خروج</button>
+    </div>
+  </nav>
+
+  <main class="container role-content" id="printRoot">
+
+    <!-- بوابة دخول الطبيب -->
+    <section id="doctorLoginGate" hidden>
+      <div class="login-card">
+        <span class="role-icon" aria-hidden="true">👨‍⚕️</span>
+        <h1>دخول الطبيب</h1>
+        <p class="text-muted">اختر اسمك من القائمة وأدخل الرقم السري (دخول تجريبي للواجهة فقط).</p>
+        <form id="doctorLoginForm" novalidate>
+          <div class="form-field">
+            <label for="doctorLoginSelect">الطبيب</label>
+            <select id="doctorLoginSelect" autocomplete="off"></select>
+          </div>
+          <div class="form-field">
+            <label for="doctorLoginPin">الرقم السري</label>
+            <input type="password" id="doctorLoginPin" inputmode="numeric" autocomplete="current-password" placeholder="••••">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">دخول</button>
+          <p class="demo-hint">الرقم السري للحسابات المحلية: <code dir="ltr">123456</code></p>
+        </form>
+      </div>
+    </section>
+    <!-- محتوى اللوحة -->
+    <div id="doctorContent" hidden>
+      <div class="app-toolbar no-print">
+        <div class="toolbar-row">
+          <div>
+            <h1 class="page-title" id="doctorTitle">🩺 قائمة اليوم</h1>
+            <p class="muted" id="doctorMeta"></p>
+          </div>
+          <span class="nav-spacer"></span>
+          <button type="button" class="btn btn-outline btn-sm" id="doctorRefreshBtn">🔄 تحديث</button>
+        </div>
+      </div>
+      <section class="profile-card dashboard-profile-summary" id="dashboardProfileSummary" hidden></section>
+
+      <section class="stat-grid" id="doctorKpis" aria-label="إحصاءات الطبيب">
+        <div class="stat-card"><span class="stat-icon" aria-hidden="true">👥</span><strong class="stat-value" id="statDayPatients">0</strong><span class="stat-label">مرضى اليوم</span></div>
+        <div class="stat-card is-accent"><span class="stat-icon" aria-hidden="true">⏳</span><strong class="stat-value" id="statDayWaiting">0</strong><span class="stat-label">في الانتظار</span></div>
+        <div class="stat-card"><span class="stat-icon" aria-hidden="true">🩺</span><strong class="stat-value" id="statDayInRoom">0</strong><span class="stat-label">داخل الكشف</span></div>
+        <div class="stat-card"><span class="stat-icon" aria-hidden="true">✅</span><strong class="stat-value" id="statDayDone">0</strong><span class="stat-label">زيارات مكتملة</span></div>
+        <div class="stat-card"><span class="stat-icon" aria-hidden="true">⏱️</span><strong class="stat-value" id="statAvgMin">—</strong><span class="stat-label">متوسط الكشف</span></div>
+        <div class="stat-card"><span class="stat-icon" aria-hidden="true">📅</span><strong class="stat-value" id="statWeek">0</strong><span class="stat-label">مواعيد الأسبوع</span></div>
+      </section>
+
+      <div class="dash-grid">
+        <div>
+          <div class="section-head">
+            <h2>قائمة اليوم — مرتبة بالأولوية ثم الوقت</h2>
+            <span class="muted" id="queueDate"></span>
+          </div>
+          <div class="queue-list" id="queueBoard" aria-live="polite"></div>
+          <p class="empty-note" id="emptyQueue" hidden>لا يوجد مرضى محوَّلون إليك اليوم — الموافقة على الحجوزات تحوّلها تلقائيًا لقائمتك</p>
+
+          <div class="section-head" style="margin-top:20px">
+            <h2>مواعيد قادمة</h2>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>المريض</th><th>التاريخ والوقت</th><th>المكان</th><th>الحالة</th></tr>
+              </thead>
+              <tbody id="upcomingBody" aria-live="polite"></tbody>
+            </table>
+            <p class="empty-note" id="emptyUpcoming" hidden>لا توجد مواعيد قادمة</p>
+          </div>
+        </div>
+        <div>
+          <div class="section-head"><h2>مواعيد الأسبوع</h2></div>
+          <div class="chart-card">
+            <svg id="doctorWeekChart" viewBox="0 0 560 220" role="img" aria-label="رسم بياني لمواعيد الأسبوع"></svg>
+            <div class="legend" id="doctorWeekLegend"></div>
+          </div>
+          <div class="section-head" style="margin-top:16px"><h2>أكثر التشخيصات شيوعًا</h2></div>
+          <div class="chart-card"><div class="timeline" id="topDiagnosesList"></div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer no-print">
+    <div class="container">© 2026 عيادة الشفاء الطبية — لوحة الطبيب</div>
+  </footer>
+
+  <script src="../js/data.js?v=doctor-accounts-1"></script>
+  <script src="../js/storage.js?v=doctor-accounts-1"></script>
+  <script src="../js/doctor.js?v=doctor-accounts-1"></script>
+</body>
+</html>

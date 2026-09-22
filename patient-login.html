@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل الدخول | عيادة الشفاء الطبية</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/main.css?v=commercial-ui-2">
+  <link rel="stylesheet" href="css/components.css?v=commercial-ui-2">
+</head>
+<body>
+  <header class="site-header"><div class="container header-inner"><a href="index.html" class="brand"><img src="assets/logo.svg" alt="شعار العيادة" class="logo"><span>عيادة الشفاء الطبية<small>بوابة الدخول الموحدة</small></span></a><a href="index.html" class="btn btn-outline btn-sm">← الرئيسية</a></div></header>
+  <main class="container page-main">
+    <div class="page-head"><p class="eyebrow">بوابة العيادة</p><h1>تسجيل الدخول</h1><p id="selectedDoctorText">أدخل بياناتك، وسيحدد النظام القسم المناسب تلقائيًا.</p></div>
+    <div class="auth-tabs" role="tablist" aria-label="الدخول أو إنشاء حساب مريض">
+      <button type="button" class="auth-tab is-active" id="loginTab" role="tab" aria-selected="true" aria-controls="loginPanel">تسجيل الدخول</button>
+      <button type="button" class="auth-tab" id="signupTab" role="tab" aria-selected="false" aria-controls="signupPanel">إنشاء حساب</button>
+    </div>
+    <form id="patientAuthForm" class="form-grid patient-auth-form" novalidate>
+      <section id="loginPanel" class="auth-panel" role="tabpanel">
+        <div class="form-field"><label for="authIdentifier">البريد الإلكتروني أو اسم المستخدم <span class="req">*</span></label><input id="authIdentifier" type="text" autocomplete="username" placeholder="president@president.com أو secretary أو بريد المريض" dir="ltr"><span class="field-error" id="authIdentifierError"></span></div>
+        <div class="form-field"><label for="authPassword">الرقم السري <span class="req">*</span></label><input id="authPassword" type="password" autocomplete="current-password"><span class="field-error" id="authPasswordError"></span></div>
+        <p class="demo-hint">الحسابات الإدارية المحلية: <code>president@president.com</code> / <code>123456</code> — <code>secretary</code> / <code>1234</code></p>
+        <section class="doctor-demo-accounts" aria-labelledby="doctorDemoTitle">
+          <h2 id="doctorDemoTitle">دخول الأطباء</h2>
+          <div id="doctorDemoAccounts"></div>
+        </section>
+      </section>
+      <section id="signupPanel" class="auth-panel" role="tabpanel" hidden>
+        <div class="form-field form-field-full">
+          <label>نوع الحساب</label>
+          <div class="account-type-switch" role="group" aria-label="نوع الحساب">
+            <label class="account-type-option"><input type="radio" name="signupRole" value="patient" checked> مريض</label>
+            <label class="account-type-option"><input type="radio" name="signupRole" value="doctor"> طبيب</label>
+            <label class="account-type-option"><input type="radio" name="signupRole" value="secretary"> سكرتير</label>
+          </div>
+        </div>
+        <div class="form-field"><label for="authName">الاسم بالكامل <span class="req">*</span></label><input id="authName" autocomplete="name"><span class="field-error" id="authNameError"></span></div>
+        <div class="form-field"><label for="authEmailSignup">البريد الإلكتروني <span class="req">*</span></label><input id="authEmailSignup" type="email" autocomplete="email" placeholder="name@example.com" dir="ltr"><span class="field-error" id="authEmailSignupError"></span></div>
+        <div class="form-field"><label for="authPasswordSignup">الرقم السري <span class="req">*</span></label><input id="authPasswordSignup" type="password" autocomplete="new-password"><span class="field-error" id="authPasswordSignupError"></span></div>
+        <div class="form-field"><label for="authPhone">رقم الهاتف <span class="req">*</span></label><input id="authPhone" type="tel" inputmode="numeric" maxlength="11" autocomplete="tel" placeholder="01xxxxxxxxx" dir="ltr"><span class="field-error" id="authPhoneError"></span></div>
+        <div class="form-field doctor-signup-only" hidden><label for="authSpecialty">التخصص <span class="req">*</span></label><input id="authSpecialty" placeholder="مثال: طب الأطفال"><span class="field-error" id="authSpecialtyError"></span></div>
+        <div class="form-field secretary-signup-only" hidden><label for="authSecretaryRole">الدور</label><input id="authSecretaryRole" value="سكرتير" readonly><span class="field-error" id="authSecretaryRoleError"></span></div>
+        <div class="form-field patient-signup-only"><label for="authNationalId">الرقم القومي <span class="req">*</span></label><input id="authNationalId" inputmode="numeric" maxlength="14" placeholder="14 رقمًا" dir="ltr"><span class="field-error" id="authNationalIdError"></span></div>
+        <div class="form-field patient-signup-only"><label for="authAge">العمر <span class="req">*</span></label><input id="authAge" type="number" min="0" max="120"><span class="field-error" id="authAgeError"></span></div>
+        <div class="form-field patient-signup-only"><label for="authGender">النوع <span class="req">*</span></label><select id="authGender"><option value="">— اختر —</option><option value="male">ذكر</option><option value="female">أنثى</option></select><span class="field-error" id="authGenderError"></span></div>
+        <p class="demo-hint form-field-full" id="signupHelp">إذا كان لديك ملف قديم، استخدم نفس الهاتف والرقم القومي لتحديثه دون إنشاء ملف مكرر.</p>
+      </section>
+      <div class="panel-actions form-field-full"><a href="index.html" class="btn btn-outline">العودة للرئيسية</a><button type="submit" class="btn btn-primary" id="authSubmit">دخول</button></div>
+    </form>
+  </main>
+  <footer class="site-footer">© 2026 عيادة الشفاء الطبية — نظام حجز المواعيد</footer>
+  <script src="js/data.js?v=commercial-ui-2"></script>
+  <script src="js/storage.js?v=secretary-signup-1"></script>
+  <script src="js/patient-auth.js?v=secretary-signup-1"></script>
+</body>
+</html>

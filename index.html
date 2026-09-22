@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="اختيار الأطباء وحجز المواعيد في عيادة الشفاء الطبية">
+  <title>عيادة الشفاء الطبية | نظام حجز المواعيد</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/main.css?v=commercial-ui-2">
+  <link rel="stylesheet" href="css/components.css?v=commercial-ui-2">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand">
+        <img src="assets/logo.svg" alt="شعار العيادة" class="logo">
+        <span>عيادة الشفاء الطبية<small>رعاية طبية موثوقة في مكان واحد</small></span>
+      </a>
+      <div class="header-actions" aria-label="إجراءات المريض">
+        <a href="patient-login.html" class="btn btn-outline btn-sm">تسجيل الدخول</a>
+        <a href="#doctors" class="btn btn-primary btn-sm">احجز مع طبيب</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- الواجهة الترحيبية -->
+    <section class="hero">
+      <div class="container">
+        <p class="eyebrow">رعاية طبية منظمة وقريبة منك</p>
+        <h1>احجز موعدك الطبي بثقة</h1>
+        <p>اختر الطبيب المناسب، حدّد موعدك، وتابع حجوزاتك من ملفك الطبي.</p>
+        <div class="hero-actions">
+          <a href="#doctors" class="btn btn-primary btn-lg">احجز مع طبيب</a>
+          <a href="#clinic" class="btn btn-outline btn-lg">تعرف على فروعنا</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- أطباء العيادة -->
+    <section class="container section" id="doctors">
+      <div class="page-head">
+        <h2>أطباء العيادة</h2>
+        <p>تعرّف على التخصص والخبرة ومكان العمل، ثم اختر الموعد المناسب.</p>
+      </div>
+      <div class="doctor-grid" id="doctorGrid" aria-live="polite"></div>
+    </section>
+
+    <!-- فروع العيادة -->
+    <section class="container section" id="clinic">
+      <div class="page-head">
+        <h2>فروعنا</h2>
+        <p>خدماتنا متاحة في فروع منظمة داخل نطاقك.</p>
+      </div>
+      <div class="info-strip">
+        <div class="info-item">
+          <strong>📍 الفرع الرئيسي</strong>
+          <span>١٥ شارع الجمهورية — المنصورة</span>
+          <span dir="ltr">0100 000 0000</span>
+          <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=15+El+Gomhoreya+St+Mansoura" target="_blank" rel="noopener">عرض الموقع على الخريطة</a>
+        </div>
+        <div class="info-item">
+          <strong>📍 فرع المشاية</strong>
+          <span>٧ شارع الجيش — المشاية السفلية، المنصورة</span>
+          <span dir="ltr">0100 000 0001</span>
+          <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=7+El+Geish+St+Mansoura" target="_blank" rel="noopener">عرض الموقع على الخريطة</a>
+        </div>
+        <div class="info-item">
+          <strong>📍 فرع طلخا</strong>
+          <span>٢٢ شارع بورسعيد — طلخا</span>
+          <span dir="ltr">0100 000 0002</span>
+          <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=22+Port+Said+St+Talkha" target="_blank" rel="noopener">عرض الموقع على الخريطة</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">© 2026 عيادة الشفاء الطبية — نظام حجز المواعيد</div>
+  </footer>
+
+  <script src="js/data.js?v=commercial-ui-2"></script>
+  <script src="js/storage.js?v=commercial-ui-2"></script>
+  <script src="js/home.js?v=commercial-ui-2"></script>
+</body>
+</html>

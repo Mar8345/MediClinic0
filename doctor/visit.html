@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>شاشة الكشف | عيادة الشفاء الطبية</title>
+  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body data-page="doctor-visit">
+
+  <nav class="role-nav no-print" aria-label="تنقل لوحة الطبيب">
+    <div class="container role-nav-inner">
+      <a href="../index.html" class="brand">
+        <img src="../assets/logo.svg" alt="شعار العيادة" class="logo">
+        <span>عيادة الشفاء<small>لوحة الطبيب</small></span>
+      </a>
+      <a href="dashboard.html" class="nav-item">🩺 قائمة اليوم</a>
+      <span class="nav-item is-active" aria-current="page">📋 شاشة الكشف</span>
+      <a href="profile.html" class="nav-item">👤 ملفي</a>
+      <span class="nav-spacer"></span>
+      <span class="sec-user" id="doctorUserName"></span>
+      <button type="button" class="btn btn-outline btn-sm" id="doctorLogoutBtn">خروج</button>
+    </div>
+  </nav>
+
+  <main class="container role-content" id="printRoot">
+
+    <!-- بوابة دخول الطبيب -->
+    <section id="doctorLoginGate" hidden>
+      <div class="login-card">
+        <span class="role-icon" aria-hidden="true">👨‍⚕️</span>
+        <h1>دخول الطبيب</h1>
+        <p class="text-muted">اختر اسمك من القائمة وأدخل الرقم السري (دخول تجريبي للواجهة فقط).</p>
+        <form id="doctorLoginForm" novalidate>
+          <div class="form-field">
+            <label for="doctorLoginSelect">الطبيب</label>
+            <select id="doctorLoginSelect" autocomplete="off"></select>
+          </div>
+          <div class="form-field">
+            <label for="doctorLoginPin">الرقم السري</label>
+            <input type="password" id="doctorLoginPin" inputmode="numeric" autocomplete="current-password" placeholder="••••">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">دخول</button>
+          <p class="demo-hint">الرقم السري للحسابات المحلية: <code dir="ltr">123456</code></p>
+        </form>
+      </div>
+    </section>
+    <!-- محتوى شاشة الكشف -->
+    <div id="doctorContent" hidden>
+
+      <!-- حالة عدم وجود زيارة -->
+      <section id="visitEmpty" hidden>
+        <div class="card empty-note">
+          <p id="visitEmptyText">لم يتم تحديد زيارة.</p>
+          <p><a class="btn btn-outline btn-sm" href="dashboard.html">↩ العودة إلى قائمة اليوم</a></p>
+        </div>
+      </section>
+
+      <div id="visitShell">
+      <div class="app-toolbar no-print">
+        <div class="toolbar-row">
+          <div>
+            <h1 class="page-title" id="visitPageTitle">🩺 شاشة الكشف</h1>
+            <p class="muted" id="visitStatusBar"></p>
+          </div>
+          <span class="nav-spacer"></span>
+          <a class="btn btn-outline btn-sm" href="dashboard.html">↩ قائمة اليوم</a>
+        </div>
+      </div>
+
+      <div class="visit-toolbar no-print">
+        <div class="visit-patient" id="visitPatientBar"></div>
+        <div class="visit-actions" id="visitActionsBar">
+          <button type="button" class="btn btn-primary btn-sm" id="startVisitBtn">▶️ بدء الكشف</button>
+          <button type="button" class="btn btn-outline btn-sm" id="saveDraftBtn">💾 حفظ مسودة</button>
+          <button type="button" class="btn btn-success btn-sm" id="finishVisitBtn">✅ حفظ وإتمام الزيارة</button>
+          <button type="button" class="btn btn-outline btn-sm" id="printRxBtn">🖨️ الروشتة</button>
+          <button type="button" class="btn btn-outline btn-sm" id="printReportBtn">🖨️ تقرير الزيارة</button>
+          <button type="button" class="btn btn-outline btn-sm" id="printSickLeaveBtn">🖨️ إجازة مرضية</button>
+        </div>
+      </div>
+      <div class="sub-tabs no-print" role="tablist" aria-label="أقسام الزيارة">
+        <button type="button" class="sub-tab is-active" data-vtab="summary" role="tab" aria-selected="true">👤 ملخص المريض</button>
+        <button type="button" class="sub-tab" data-vtab="vitals" role="tab" aria-selected="false">🌡️ العلامات الحيوية</button>
+        <button type="button" class="sub-tab" data-vtab="exam" role="tab" aria-selected="false">🩺 الشكوى والفحص</button>
+        <button type="button" class="sub-tab" data-vtab="diagnosis" role="tab" aria-selected="false">🧬 التشخيص</button>
+        <button type="button" class="sub-tab" data-vtab="rx" role="tab" aria-selected="false">💊 الروشتة</button>
+        <button type="button" class="sub-tab" data-vtab="orders" role="tab" aria-selected="false">🧪 الفحوصات</button>
+        <button type="button" class="sub-tab" data-vtab="advice" role="tab" aria-selected="false">📝 التوصيات والمتابعة</button>
+      </div>
+
+      <form id="visitForm" novalidate>
+        <!-- 1) ملخص المريض -->
+        <section class="visit-panel" data-vpanel="summary" role="tabpanel">
+          <div id="patientAlerts"></div>
+          <dl class="summary-list" id="visitPatientInfo"></dl>
+          <h3 class="sub-title">الزيارات السابقة</h3>
+          <div class="timeline" id="pastVisitsList"></div>
+        </section>
+
+        <!-- 2) العلامات الحيوية -->
+        <section class="visit-panel" data-vpanel="vitals" role="tabpanel" hidden>
+          <div class="vitals-grid">
+            <div class="form-field">
+              <label for="vBpSys">الضغط الانقباضي (مم زئبق)</label>
+              <input type="number" id="vBpSys" min="60" max="260" inputmode="numeric" placeholder="مثال: 120">
+            </div>
+            <div class="form-field">
+              <label for="vBpDia">الضغط الانبساطي (مم زئبق)</label>
+              <input type="number" id="vBpDia" min="30" max="160" inputmode="numeric" placeholder="مثال: 80">
+            </div>
+            <div class="form-field">
+              <label for="vPulse">النبض (نبضة/دقيقة)</label>
+              <input type="number" id="vPulse" min="30" max="220" inputmode="numeric" placeholder="مثال: 76">
+            </div>
+            <div class="form-field">
+              <label for="vTemp">الحرارة (°م)</label>
+              <input type="number" id="vTemp" min="34" max="43" step="0.1" inputmode="decimal" placeholder="مثال: 37">
+            </div>
+            <div class="form-field">
+              <label for="vSugar">سكر الدم (مجم/دل)</label>
+              <input type="number" id="vSugar" min="40" max="600" inputmode="numeric" placeholder="مثال: 110">
+            </div>
+            <div class="form-field">
+              <label for="vWeight">الوزن (كجم)</label>
+              <input type="number" id="vWeight" min="2" max="300" step="0.1" inputmode="decimal" placeholder="مثال: 70">
+            </div>
+            <div class="form-field">
+              <label for="vHeight">الطول (سم)</label>
+              <input type="number" id="vHeight" min="40" max="230" inputmode="numeric" placeholder="مثال: 170">
+            </div>
+          </div>
+          <p class="muted" id="bmiLine" aria-live="polite"></p>
+        </section>
+        <!-- 3) الشكوى والفحص -->
+        <section class="visit-panel" data-vpanel="exam" role="tabpanel" hidden>
+          <div class="form-field">
+            <label for="vComplaint">الشكوى الرئيسية</label>
+            <textarea id="vComplaint" rows="2" placeholder="اكتب الشكوى الرئيسية للمريض..."></textarea>
+          </div>
+          <div class="form-field">
+            <label for="vHistory">تاريخ المرض الحالي</label>
+            <textarea id="vHistory" rows="3" placeholder="بداية الأعراض، تطورها، الأدوية المستخدمة..."></textarea>
+          </div>
+          <div class="form-field">
+            <label for="vExamination">الفحص الإكلينيكي</label>
+            <textarea id="vExamination" rows="3" placeholder="نتائج الفحص السريري..."></textarea>
+          </div>
+        </section>
+
+        <!-- 4) التشخيص -->
+        <section class="visit-panel" data-vpanel="diagnosis" role="tabpanel" hidden>
+          <div class="form-field">
+            <label for="vDiagnosis">التشخيص الرئيسي</label>
+            <input type="text" id="vDiagnosis" placeholder="مثال: التهاب حلق فيروسي">
+          </div>
+          <div class="form-field">
+            <label for="vIcd">كود ICD (اختياري)</label>
+            <input type="text" id="vIcd" placeholder="مثال: J02.9" dir="ltr">
+          </div>
+          <div class="form-field">
+            <label for="vSeverity">درجة الخطورة</label>
+            <select id="vSeverity">
+              <option value="">— غير محددة —</option>
+              <option value="خفيفة">خفيفة</option>
+              <option value="متوسطة">متوسطة</option>
+              <option value="شديدة">شديدة</option>
+            </select>
+          </div>
+        </section>
+        <!-- 5) الروشتة -->
+        <section class="visit-panel" data-vpanel="rx" role="tabpanel" hidden>
+          <div class="toolbar-row no-print">
+            <button type="button" class="btn btn-primary btn-sm" id="addMedBtn">＋ إضافة دواء</button>
+            <div class="select">
+              <label class="visually-hidden" for="rxTemplate">قالب روشتة جاهز</label>
+              <select id="rxTemplate" aria-label="قالب روشتة جاهز">
+                <option value="">— قوالب جاهزة —</option>
+                <option value="cold">🤧 روشتة برد وأنفلونزا</option>
+                <option value="antibiotic">🦠 روشتة مضاد حيوي</option>
+                <option value="pain">💊 روشتة مسكّن / ألم</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table rx-table">
+              <caption class="visually-hidden">أدوية الروشتة</caption>
+              <thead>
+                <tr>
+                  <th>اسم الدواء</th><th>الشكل</th><th>الجرعة</th><th>التكرار</th>
+                  <th>المدة</th><th>تعليمات</th><th class="no-print">حذف</th>
+                </tr>
+              </thead>
+              <tbody id="rxBody"></tbody>
+            </table>
+            <p class="empty-note" id="emptyRx" hidden>لم تُضف أدوية بعد — استخدم «＋ إضافة دواء» أو اختر قالبًا جاهزًا</p>
+          </div>
+          <datalist id="medicineList"></datalist>
+        </section>
+
+        <!-- 6) الفحوصات المطلوبة -->
+        <section class="visit-panel" data-vpanel="orders" role="tabpanel" hidden>
+          <div class="toolbar-row no-print">
+            <button type="button" class="btn btn-primary btn-sm" id="addOrderBtn">＋ إضافة فحص</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table rx-table">
+              <caption class="visually-hidden">الفحوصات المطلوبة</caption>
+              <thead><tr><th>النوع</th><th>الفحص المطلوب</th><th class="no-print">حذف</th></tr></thead>
+              <tbody id="ordersBody"></tbody>
+            </table>
+            <p class="empty-note" id="emptyOrders" hidden>لا توجد فحوصات مطلوبة</p>
+          </div>
+        </section>
+
+        <!-- 7) التوصيات والمتابعة -->
+        <section class="visit-panel" data-vpanel="advice" role="tabpanel" hidden>
+          <div class="form-field">
+            <label for="vAdvice">التوصيات والنصائح الطبية</label>
+            <textarea id="vAdvice" rows="3" placeholder="مثال: تقليل الملح — مشي 30 دقيقة يوميًا — راحة صوتية"></textarea>
+          </div>
+          <div class="vitals-grid">
+            <div class="form-field">
+              <label for="vSickLeave">إجازة مرضية (بالأيام)</label>
+              <input type="number" id="vSickLeave" min="0" max="60" inputmode="numeric" placeholder="0">
+            </div>
+            <div class="form-field">
+              <label for="followUpDate">موعد متابعة (اختياري)</label>
+              <input type="date" id="followUpDate">
+            </div>
+            <div class="form-field">
+              <label>أوقات المتابعة المتاحة</label>
+              <div class="slot-chips" id="followUpSlots" role="group" aria-label="أوقات المتابعة المتاحة"></div>
+            </div>
+          </div>
+          <div class="toolbar-row no-print">
+            <button type="button" class="btn btn-outline btn-sm" id="createFollowUpBtn">📅 إنشاء موعد المتابعة</button>
+          </div>
+        </section>
+      </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer no-print">
+    <div class="container">© 2026 عيادة الشفاء الطبية — لوحة الطبيب</div>
+  </footer>
+
+  <!-- أوراق الطباعة الثلاث (تُملأ عند الطبع) -->
+  <section id="printRx" class="rx-sheet" hidden aria-label="الروشتة الطبية"><div id="printRxBody"></div></section>
+  <section id="printReport" class="rx-sheet" hidden aria-label="تقرير الزيارة"><div id="printReportBody"></div></section>
+  <section id="printSickLeave" class="rx-sheet" hidden aria-label="شهادة إجازة مرضية"><div id="printSickLeaveBody"></div></section>
+
+  <script src="../js/data.js?v=doctor-accounts-1"></script>
+  <script src="../js/storage.js?v=doctor-accounts-1"></script>
+  <script src="../js/doctor.js?v=doctor-accounts-1"></script>
+</body>
+</html>

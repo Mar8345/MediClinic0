@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة تحكم السكرتير | عيادة الشفاء الطبية</title>
+  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body data-page="secretary-dashboard">
+
+  <nav class="role-nav no-print" aria-label="تنقل لوحة السكرتير">
+    <div class="container role-nav-inner">
+      <a href="../index.html" class="brand">
+        <img src="../assets/logo.svg" alt="شعار العيادة" class="logo">
+        <span>عيادة الشفاء<small>لوحة السكرتير</small></span>
+      </a>
+      <a href="dashboard.html" class="nav-item is-active" aria-current="page">📊 لوحة التحكم</a>
+      <a href="appointments.html" class="nav-item">📅 المواعيد</a>
+      <a href="referrals.html" class="nav-item">🔁 التحويل للطبيب</a>
+      <a href="patients.html" class="nav-item">👥 المرضى</a>
+      <a href="profile.html" class="nav-item">👤 ملفي</a>
+      <span class="nav-spacer"></span>
+      <span class="sec-user" id="secUserName"></span>
+      <button type="button" class="btn btn-outline btn-sm" id="logoutBtn">خروج</button>
+    </div>
+  </nav>
+
+  <main class="container role-content" id="printRoot">
+
+    <!-- بوابة الدخول التجريبية (واجهة فقط — لا مصادقة حقيقية في نسخة Vanilla) -->
+    <section id="loginGate" hidden>
+      <div class="login-card">
+        <span class="role-icon" aria-hidden="true">🗂️</span>
+        <h1>دخول لوحة السكرتير</h1>
+        <p class="text-muted">دخول تجريبي للواجهة فقط — لا توجد مصادقة حقيقية في هذه النسخة.</p>
+        <form id="loginForm" novalidate>
+          <div class="form-field">
+            <label for="loginUser">البريد الإلكتروني أو اسم المستخدم</label>
+            <input type="text" id="loginUser" value="secretary" autocomplete="username" placeholder="secretary أو name@example.com">
+          </div>
+          <div class="form-field">
+            <label for="loginPin">الرقم السري</label>
+            <input type="password" id="loginPin" inputmode="numeric" autocomplete="current-password" placeholder="••••">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">دخول</button>
+          <p class="demo-hint">الحساب القديم: <code>secretary</code> / <code>1234</code> — الحسابات الجديدة تستخدم البريد بعد اعتماد الرئيس.</p>
+        </form>
+      </div>
+    </section>
+
+    <!-- محتوى اللوحة -->
+    <div id="secContent" hidden>
+      <div class="app-toolbar no-print">
+        <div class="toolbar-row">
+          <h1 class="page-title">📊 لوحة تحكم السكرتير</h1>
+          <span class="nav-spacer"></span>
+          <button type="button" class="btn btn-outline btn-sm" id="refreshBtn">🔄 تحديث</button>
+          <button type="button" class="btn btn-outline btn-sm" id="resetSeedBtn" title="مسح كل البيانات وإعادة زرع البيانات التجريبية">🧪 بيانات تجريبية</button>
+        </div>
+      </div>
+      <section class="profile-card dashboard-profile-summary" id="dashboardProfileSummary" hidden></section>
+
+      <section class="stat-grid" id="kpiGrid" aria-label="إحصاءات سريعة">
+        <div class="stat-card"><span class="stat-icon" aria-hidden="true">📅</span><strong class="stat-value" id="statToday">0</strong><span class="stat-label">مواعيد اليوم</span></div>
+        <div class="stat-card is-accent"><span class="stat-icon" aria-hidden="true">⏳</span><strong class="stat-value" id="statPending">0</strong><span class="stat-label">قيد المراجعة</span></div>
+        <div class="stat-card"><span class="stat-icon" aria-hidden="true">✅</span><strong class="stat-value" id="statApproved">0</strong><span class="stat-label">مؤكدة اليوم</span></div>
+        <div class="stat-card"><span class="stat-icon" aria-hidden="true">🚫</span><strong class="stat-value" id="statRejected">0</strong><span class="stat-label">مرفوضة / ملغاة</span></div>
+        <div class="stat-card"><span class="stat-icon" aria-hidden="true">👥</span><strong class="stat-value" id="statPatients">0</strong><span class="stat-label">إجمالي المرضى</span></div>
+        <div class="stat-card"><span class="stat-icon" aria-hidden="true">📈</span><strong class="stat-value" id="statOccupancy">0%</strong><span class="stat-label">إشغال اليوم</span><div class="kpi-bar"><span id="occupancyBar" style="width:0%"></span></div></div>
+      </section>
+
+      <section class="chart-grid">
+        <div class="chart-card">
+          <h3>مواعيد الأسبوع القادم</h3>
+          <svg id="weeklyChart" viewBox="0 0 560 220" role="img" aria-label="رسم بياني أعمدة لمواعيد الأسبوع القادم"></svg>
+          <div class="legend" id="weeklyLegend"></div>
+        </div>
+        <div class="chart-card">
+          <h3>توزيع حالات المواعيد</h3>
+          <svg id="statusChart" viewBox="0 0 220 220" role="img" aria-label="رسم بياني دائري لتوزيع حالات المواعيد"></svg>
+          <div class="legend" id="statusLegend"></div>
+        </div>
+      </section>
+
+      <section class="dash-grid">
+        <div>
+          <div class="section-head">
+            <h2>طلبات بانتظار الموافقة</h2>
+            <span class="badge badge-warning" id="pendingCount">0</span>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>رقم الحجز</th><th>المريض</th><th>الطبيب / المكان</th><th>التاريخ والوقت</th><th class="no-print">إجراءات</th></tr>
+              </thead>
+              <tbody id="pendingTableBody"></tbody>
+            </table>
+            <p class="empty-note" id="emptyPending" hidden>لا توجد طلبات بانتظار الموافقة 🎉</p>
+          </div>
+        </div>
+        <div>
+          <div class="section-head"><h2>جدول اليوم</h2><span class="muted" id="todayLabel"></span></div>
+          <div class="chart-card"><div class="timeline" id="todayTimeline"></div></div>
+          <div class="section-head"><h2>الأطباء وأماكن عملهم اليوم</h2></div>
+          <div class="chart-card"><div id="doctorsTodayList"></div></div>
+        </div>
+      </section>
+
+      <!-- نافذة رفض الطلب -->
+      <div class="modal-overlay" id="rejectModal" hidden>
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="rejectTitle">
+          <h3 id="rejectTitle">رفض طلب الحجز</h3>
+          <p class="text-muted">اكتب سبب الرفض بوضوح ليصل للمريض.</p>
+          <div class="form-field">
+            <label for="rejectReason">سبب الرفض <span class="req" aria-hidden="true">*</span></label>
+            <textarea id="rejectReason" rows="3" placeholder="مثال: الموعد محجوز بالكامل في هذا اليوم"></textarea>
+            <span class="field-error" id="rejectError" aria-live="polite"></span>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-outline" data-close>إلغاء</button>
+            <button type="button" class="btn btn-danger" id="rejectSave">تأكيد الرفض</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="site-footer no-print">
+    <div class="container">© 2026 عيادة الشفاء الطبية — لوحة السكرتير</div>
+  </footer>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/storage.js?v=secretary-signup-1"></script>
+  <script src="../js/secretary.js?v=secretary-signup-1"></script>
+</body>
+</html>

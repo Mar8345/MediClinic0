@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>حجز موعد جديد | عيادة الشفاء الطبية</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/main.css?v=commercial-ui-2">
+  <link rel="stylesheet" href="css/components.css?v=commercial-ui-2">
+</head>
+<body class="booking-page">
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand">
+        <img src="assets/logo.svg" alt="شعار العيادة" class="logo">
+        <span>عيادة الشفاء الطبية<small>نظام حجز المواعيد</small></span>
+      </a>
+      <a href="index.html" class="btn btn-outline btn-sm">← الرئيسية</a>
+    </div>
+  </header>
+
+  <main class="container page-main">
+    <div class="page-head">
+      <h1>حجز موعد جديد</h1>
+      <p>ثلاث خطوات بسيطة: اختر الطبيب ← حدد الموعد ← أدخل بياناتك.</p>
+    </div>
+
+    <!-- مؤشر الخطوات -->
+    <ol class="steps" id="stepsBar" aria-label="خطوات الحجز">
+      <li class="step is-active" data-step="1"><span class="step-num">1</span><span>اختيار الطبيب</span></li>
+      <li class="step" data-step="2"><span class="step-num">2</span><span>تحديد الموعد</span></li>
+      <li class="step" data-step="3"><span class="step-num">3</span><span>بيانات المريض</span></li>
+    </ol>
+
+    <!-- الخطوة 1: اختيار الطبيب -->
+    <section class="step-panel" id="step-doctor" aria-labelledby="doctorTitle">
+      <div class="panel-head">
+        <h2 id="doctorTitle">اختر الطبيب المناسب</h2>
+        <div class="chips" id="specialtyFilters" role="group" aria-label="تصفية حسب التخصص"></div>
+      </div>
+      <div class="doctor-grid" id="doctorGrid"></div>
+    </section>
+
+    <!-- الخطوة 2: تحديد الموعد -->
+    <section class="step-panel" id="step-schedule" aria-labelledby="scheduleTitle" hidden>
+      <div class="selected-doctor" id="selectedDoctorBar" aria-live="polite"></div>
+      <div class="panel-head">
+        <h2 id="scheduleTitle">اختر اليوم والوقت</h2>
+      </div>
+      <div class="chips" id="dateChips" role="listbox" aria-label="اختيار اليوم"></div>
+      <div class="day-location" id="dayLocationBar" aria-live="polite" hidden></div>
+      <h3 class="slots-title">الأوقات المتاحة</h3>
+      <div class="slots-grid" id="slotsGrid"></div>
+      <div class="panel-actions">
+          <button type="button" class="btn btn-outline" data-goto="1">العودة لاختيار الطبيب</button>
+          <button type="button" class="btn btn-primary" id="toStep3Btn" disabled>متابعة إلى بيانات المريض</button>
+      </div>
+    </section>
+
+    <!-- الخطوة 3: بيانات المريض -->
+    <section class="step-panel" id="step-patient" hidden>
+      <form id="patientForm" novalidate>
+        <div class="selected-doctor" id="appointmentSummaryBar" aria-live="polite"></div>
+
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="fullName">الاسم بالكامل <span class="req" aria-hidden="true">*</span></label>
+            <input type="text" id="fullName" name="fullName" autocomplete="name" placeholder="مثال: كريم حسن علي">
+            <span class="field-error" data-error-for="fullName" aria-live="polite"></span>
+          </div>
+
+          <div class="form-field">
+            <label for="nationalId">الرقم القومي <span class="req" aria-hidden="true">*</span></label>
+            <input type="text" id="nationalId" name="nationalId" inputmode="numeric" maxlength="14" placeholder="14 رقمًا">
+            <span class="field-error" data-error-for="nationalId" aria-live="polite"></span>
+          </div>
+
+          <div class="form-field">
+            <label for="phone">رقم الموبايل <span class="req" aria-hidden="true">*</span></label>
+            <input type="tel" id="phone" name="phone" inputmode="numeric" maxlength="11" autocomplete="tel" placeholder="01xxxxxxxxx">
+            <span class="field-error" data-error-for="phone" aria-live="polite"></span>
+          </div>
+
+          <div class="form-field">
+            <label for="age">العمر <span class="req" aria-hidden="true">*</span></label>
+            <input type="number" id="age" name="age" min="0" max="120" placeholder="بالسنوات">
+            <span class="field-error" data-error-for="age" aria-live="polite"></span>
+          </div>
+
+          <div class="form-field">
+            <label for="gender">النوع <span class="req" aria-hidden="true">*</span></label>
+            <select id="gender" name="gender">
+              <option value="">— اختر —</option>
+              <option value="male">ذكر</option>
+              <option value="female">أنثى</option>
+            </select>
+            <span class="field-error" data-error-for="gender" aria-live="polite"></span>
+          </div>
+
+          <div class="form-field form-field-full">
+            <label for="reason">سبب الزيارة <span class="req" aria-hidden="true">*</span></label>
+            <textarea id="reason" name="reason" rows="3" placeholder="اكتب باختصار سبب الزيارة..."></textarea>
+            <span class="field-error" data-error-for="reason" aria-live="polite"></span>
+          </div>
+        </div>
+
+        <div class="panel-actions">
+          <button type="button" class="btn btn-outline" data-goto="2">العودة لاختيار الموعد</button>
+          <button type="submit" class="btn btn-primary">مراجعة وتأكيد الحجز</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- شاشة النجاح -->
+    <section class="step-panel" id="step-success" hidden>
+      <div class="success-card">
+        <span class="success-icon" aria-hidden="true">✅</span>
+        <h2>تم استلام طلب الحجز بنجاح!</h2>
+        <p class="text-muted">سيتم مراجعة موعدك من سكرتيرة العيادة، ويمكنك الاحتفاظ برقم الحجز للمتابعة.</p>
+        <div class="success-code">رقم الحجز: <strong id="successCode"></strong></div>
+        <dl class="summary-list" id="successSummary"></dl>
+        <p class="text-muted">⏰ يُرجى الحضور 10 دقائق قبل الموعد، والاحتفاظ برقم الحجز للمتابعة.</p>
+        <div class="hero-actions">
+          <a href="index.html" class="btn btn-outline">العودة للرئيسية</a>
+          <a href="profile.html" class="btn btn-outline">متابعة حجوزاتي</a>
+          <button type="button" class="btn btn-primary" id="bookAgainBtn">حجز موعد آخر</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- نافذة مراجعة وتأكيد الحجز -->
+  <div class="modal-overlay" id="confirmModal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <h3 id="confirmTitle">مراجعة بيانات الحجز</h3>
+      <dl class="summary-list" id="confirmSummary"></dl>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" id="cancelConfirmBtn">تعديل البيانات</button>
+        <button type="button" class="btn btn-primary" id="confirmBookingBtn">تأكيد الحجز</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">© 2026 عيادة الشفاء الطبية — نظام حجز المواعيد</div>
+  </footer>
+
+  <script src="js/data.js?v=commercial-ui-2"></script>
+  <script src="js/storage.js?v=commercial-ui-2"></script>
+  <script src="js/booking.js?v=commercial-ui-2"></script>
+</body>
+</html>

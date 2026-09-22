@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ملف السكرتير | عيادة الشفاء الطبية</title>
+  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body data-page="secretary-profile">
+  <nav class="role-nav no-print" aria-label="تنقل ملف السكرتير">
+    <div class="container role-nav-inner">
+      <a href="../index.html" class="brand"><img src="../assets/logo.svg" alt="شعار العيادة" class="logo"><span>عيادة الشفاء<small>ملف السكرتير</small></span></a>
+      <a href="dashboard.html" class="nav-item">📊 لوحة التحكم</a>
+      <a href="appointments.html" class="nav-item">📅 المواعيد</a>
+      <a href="profile.html" class="nav-item is-active" aria-current="page">👤 ملفي</a>
+      <span class="nav-spacer"></span><span class="sec-user" id="secUserName"></span>
+      <button type="button" class="btn btn-outline btn-sm" id="logoutBtn">خروج</button>
+    </div>
+  </nav>
+  <main class="container role-content">
+    <section id="profileGate" class="login-card" hidden>
+      <h1>يلزم تسجيل الدخول</h1><p class="text-muted">سجّل دخولك للوصول إلى ملف السكرتير.</p>
+      <a class="btn btn-primary" href="../patient-login.html">الذهاب لتسجيل الدخول</a>
+    </section>
+    <div id="profileContent" hidden>
+      <div class="app-toolbar"><div class="toolbar-row"><div><h1 class="page-title">👤 ملف السكرتير</h1><p class="muted" id="profileMeta"></p></div></div></div>
+      <section class="profile-card role-profile-card" id="profileCard"></section>
+      <section class="stat-grid" aria-label="إحصاءات حجوزات العيادة">
+        <div class="stat-card is-accent"><span class="stat-icon">📅</span><strong class="stat-value" id="statTotal">0</strong><span class="stat-label">إجمالي الحجوزات</span></div>
+        <div class="stat-card"><span class="stat-icon">⏳</span><strong class="stat-value" id="statPending">0</strong><span class="stat-label">قيد المراجعة</span></div>
+        <div class="stat-card"><span class="stat-icon">✅</span><strong class="stat-value" id="statApproved">0</strong><span class="stat-label">مؤكدة / حاضرة</span></div>
+        <div class="stat-card"><span class="stat-icon">✔️</span><strong class="stat-value" id="statCompleted">0</strong><span class="stat-label">مكتملة</span></div>
+        <div class="stat-card"><span class="stat-icon">🚫</span><strong class="stat-value" id="statClosed">0</strong><span class="stat-label">مرفوضة / ملغاة</span></div>
+      </section>
+      <section class="section-block"><div class="section-head"><h2>آخر حجوزات العيادة</h2></div><div class="table-wrap"><table class="data-table"><thead><tr><th>المريض</th><th>الطبيب</th><th>التاريخ</th><th>الحالة</th></tr></thead><tbody id="recentAppointments"></tbody></table><p class="empty-note" id="emptyAppointments" hidden>لا توجد حجوزات</p></div></section>
+    </div>
+  </main>
+  <footer class="site-footer no-print">© 2026 عيادة الشفاء الطبية</footer>
+  <script src="../js/data.js"></script><script src="../js/storage.js"></script><script src="../js/secretary-profile.js"></script>
+</body>
+</html>
